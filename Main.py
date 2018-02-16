@@ -24,23 +24,44 @@ shipImg = pygame.image.load_extended(os.path.join("Ship.png"))
 
 
 class Entity:
-    def __init__(self, name, x, y, speed, image=None):
+    def __init__(self, name, x, y, speed, image=None, width=0, height=0):
         self.name = name
         self.x = x
         self.y = y
         self.image = image
         self.speed = speed
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
+        self.width = width
+        self.height = height
+        if image:
+            self.width = self.image.get_width()
+            self.height = self.image.get_height()
         self.xmax = x + self.width
         self.ymax = y + self.height
         entity_list.append(self)
 
     def display_entity(self):
-        gameDisplay.blit(self.image, (self.x, self.y))
-        size = self.image.get_size()
-    def entity_colission(self):
-        return
+        if self.image:
+            gameDisplay.blit(self.image, (self.x, self.y))
+
+    def create_rect(self, color):
+        pygame.draw.rect(gameDisplay, color, [self.x, self.y, self.width, self.height])
+
+    def block_reset(self):
+        if self.y > display_height + self.height:
+            self.y = 0 - self.height
+            self.x = random.randrange(0, display_width)
+
+    def block_move(self):
+        self.y += self.speed
+
+    def entity_colission(self, ent_list):
+        print('ok')
+        for entity in ent_list:
+            print(entity.name)
+            if (self.x < entity.xmax and self.y < entity.ymax) and (self.xmax > entity.x and self.ymax > entity.y):
+                if self.name is not entity.name:
+                    crash()
+
 
 
 
@@ -68,18 +89,17 @@ class Player(Entity):
         return x_change, y_change
 
     def player_bounds_check(self):
+        print('ok')
         if self.x > display_width - self.width or self.x < 0 or self.y > display_height - self.height or self.y < 0:
             crash()
 
-    def player_collision_check(self, entity):
-        if (x < thingx_max and y < thingy_max) and (x_max > thingx and y_max > thingy):
-            crash()
+
 
 
 
 player_ship = Player('ship', (display_width * 0.45), (display_height * 0.8), 5,
                      pygame.image.load_extended(os.path.join("Ship.png")))
-
+death_block = Entity('block', random.randrange(0, display_width), -600, 7, image=None, width=100, height=100)
 
 def things(thingx, thingy, thingw, thingh, color):
     pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
@@ -116,15 +136,6 @@ def game_loop():
     ship_width = 32
     ship_height = 32
     player_delta = []
-
-    thingx = random.randrange(0, display_width)
-    thingy = -600
-    thing_speed = 7
-    thing_width = 100
-    thing_height = 100
-    thingx_max = thingx + thing_width
-    thingy_max = thingy + thing_height
-
     game_exit = False
 
     while not game_exit:
@@ -139,30 +150,15 @@ def game_loop():
         player_ship.x += player_delta[0]
         gameDisplay.fill(white)
         player_ship.display_entity()
+        death_block.create_rect(black)
 
-        things(thingx, thingy, thing_width, thing_height, black)
-        thingy += thing_speed
-
+        death_block.block_move()
+        death_block.block_reset()
         player_ship.player_bounds_check()
-
-        if thingy > display_height + thing_height:
-            thingy = 0 - thing_height
-            thingx = random.randrange(0, display_width)
+        player_ship.entity_colission(entity_list)
 
         x_max = x + ship_width
         y_max = y + ship_height
-        thingx_max = thingx + thing_width
-        thingy_max = thingy + thing_height
-
-        if (x < thingx_max and y < thingy_max) and (x_max > thingx and y_max > thingy):
-            #print('crash')
-            #print('x = ' + str(x) + ' xmax = ' + str(x_max))
-            #print('y = ' + str(y) + ' ymax = ' + str(y_max))
-            #print('blockx = ' + str(thingx) + ' bloacky = ' + str(thingy))
-            #print('blockymax = ' + str(thingx_max) + ' bloacky = ' + str(thingy_max))
-
-            crash()
-        print(entity_list)
         pygame.display.update()
 
         clock.tick(60)
