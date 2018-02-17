@@ -66,17 +66,14 @@ class Entity:
     def block_move(self):
         self.y += self.speed
 
-    def entity_colission(self, ent_list):
-        #print('ok')
+    def entity_collision(self, ent_list):
         for entity in ent_list:
-            #print(entity.name)
             if (self.x < entity.xmax and self.y < entity.ymax) and (self.xmax > entity.x and self.ymax > entity.y):
                 if self.name is not entity.name:
                     crash()
 
 
 class Player(Entity):
-
 
     def player_movement(self, keys):
         if self.speed -1 >= self.xchange >= ((self.speed -1) * -1):
@@ -104,24 +101,14 @@ class Player(Entity):
                 self.ychange += speed_decay * -1
         self.x += self.xchange
         self.y += self.ychange
-        print(self.x)
-
-
-
 
         print("x " + str(self.xchange))
         print("y " + str(self.ychange))
 
-
-
-
-
-
-
     def player_bounds_check(self):
-        #print('ok')
         if self.x > display_width - self.width or self.x < 0 or self.y > display_height - self.height or self.y < 0:
             crash()
+
 
 def key_update(events):
         if events.type == pygame.KEYDOWN:
@@ -176,6 +163,7 @@ def message_display(text):
 def crash():
     message_display('You crashed')
 
+
 def game_reset():
     death_block.y = 0 - death_block.height
     death_block.x = random.randrange(0, display_width)
@@ -186,14 +174,13 @@ def game_reset():
     up_down_left_right[2] = False
     up_down_left_right[3] = False
 
+
 def game_loop():
-    player_delta = []
     game_exit = False
 
     while not game_exit:
         for event in pygame.event.get():
             key_update(event)
-            #print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -202,16 +189,13 @@ def game_loop():
         player_ship.display_entity()
 
         death_block.create_rect(black)
-        #print(player_delta)
-
         death_block.block_move()
         player_ship.player_bounds_check()
-        player_ship.entity_colission(entity_list)
+        player_ship.entity_collision(entity_list)
         death_block.block_reset()
 
         update_all(entity_list)
         pygame.display.update()
-        #print(up_down_left_right)
 
         clock.tick(60)
 
