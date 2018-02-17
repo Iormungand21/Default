@@ -27,6 +27,7 @@ up_down_left_right = [False, False, False, False]
 x_change = 0
 y_change = 0
 
+
 class Entity:
     def __init__(self, name, x, y, speed, image=None, width=0, height=0, acceleration=0):
         self.name = name
@@ -45,7 +46,6 @@ class Entity:
         self.xmax = x + self.width
         self.ymax = y + self.height
         entity_list.append(self)
-
 
     def display_entity(self):
         if self.image:
@@ -76,60 +76,54 @@ class Entity:
 
 
 class Player(Entity):
-    def __init__(self):
+    #def __init__(self):
         
 
 
     def player_movement(self, keys):
-        #up_down_left_right
-        if self.speed > self.x_change > (self.speed * -1):
-            self.x_change += self.accel
-
-            elif keys[2]:
-
+        if self.speed -1 >= self.xchange >= ((self.speed -1) * -1):
+            if keys[2]:
+                self.xchange += (self.accel * -1)
             elif keys[3]:
-                self.x_change += self.accel
+                self.xchange += self.accel
 
-        return
+        if self.speed -1 >= self.ychange >= ((self.speed -1) * -1):
+            if keys[0]:
+                self.ychange += (self.accel * -1)
+            elif keys[1]:
+                self.ychange += self.accel
 
-    def control_check_new(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                x_change = self.speed * -1
-            elif event.key == pygame.K_RIGHT:
-                x_change = self.speed
-            elif event.key == pygame.K_DOWN:
-                y_change = self.speed
-            elif event.key == pygame.K_UP:
-                y_change = self.speed * -1
+        if self.xchange != 0:
+            if not keys[2] and self.xchange < 0:
+                self.xchange += speed_decay
+            elif not keys[3] and self.xchange > 0:
+                self.xchange += speed_decay * -1
 
-    def control_check_up(self, event, x_change, y_change):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                x_change = self.speed * -1
-            elif event.key == pygame.K_RIGHT:
-                x_change = self.speed
-            elif event.key == pygame.K_DOWN:
-                y_change = self.speed
-            elif event.key == pygame.K_UP:
-                y_change = self.speed * -1
-        return x_change, y_change
+        if self.ychange != 0:
+            if not keys[0] and self.ychange < 0:
+                self.ychange += speed_decay
+            elif not keys[1] and self.ychange > 0:
+                self.ychange += speed_decay * -1
+        self.x += self.xchange
+        self.y += self.ychange
+        print(self.x)
 
-    def control_check_down(self, event, x_change, y_change):
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT and x_change == self.speed * -1:
-                x_change = 0
-            elif event.key == pygame.K_RIGHT and x_change == self.speed:
-                x_change = 0
-            elif event.key == pygame.K_DOWN or event.key == pygame.K_UP:
-                y_change = 0
-        return x_change, y_change
+
+
+
+        print("x " + str(self.xchange))
+        print("y " + str(self.ychange))
+
+
+
+
+
+
 
     def player_bounds_check(self):
         #print('ok')
         if self.x > display_width - self.width or self.x < 0 or self.y > display_height - self.height or self.y < 0:
             crash()
-
 
 def key_update(events):
         if events.type == pygame.KEYDOWN:
@@ -157,8 +151,6 @@ def key_update(events):
 
             elif events.key == pygame.K_UP:
                 up_down_left_right[0] = False
-
-
 
 
 def update_all(list):
@@ -207,11 +199,7 @@ def game_loop():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            player_delta = player_ship.control_check_up(event, x_change, y_change)
-            #player_delta = player_ship.control_check_down(event, x_change, y_change)
-        if player_delta:
-            player_ship.y += player_delta[1]
-            player_ship.x += player_delta[0]
+        player_ship.player_movement(up_down_left_right)
         gameDisplay.fill(white)
         player_ship.display_entity()
 
@@ -225,12 +213,14 @@ def game_loop():
 
         update_all(entity_list)
         pygame.display.update()
-        print(up_down_left_right)
+        #print(up_down_left_right)
+
         clock.tick(60)
 
 
 player_ship = Player('ship', (display_width * 0.45), (display_height * 0.8), 10,
                      pygame.image.load_extended(os.path.join("Ship.png")), acceleration=1)
+
 death_block = Entity('block', random.randrange(0, display_width), -600, 7, image=None, width=100, height=100)
 game_loop()
 pygame.quit()
