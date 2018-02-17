@@ -16,7 +16,7 @@ red = (255, 0, 0)
 blue = (0, 0, 255)
 green = (0, 255, 0)
 
-speed_decay = 1
+speed_decay = 0.5
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('GAME TIME')
 clock = pygame.time.Clock()
@@ -76,8 +76,6 @@ class Entity:
 
 
 class Player(Entity):
-    #def __init__(self):
-        
 
 
     def player_movement(self, keys):
