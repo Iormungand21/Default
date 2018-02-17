@@ -24,6 +24,9 @@ entity_list = []
 key_list = []
 up_down_left_right = [False, False, False, False]
 
+x_change = 0
+y_change = 0
+
 class Entity:
     def __init__(self, name, x, y, speed, image=None, width=0, height=0, acceleration=0):
         self.name = name
@@ -34,6 +37,8 @@ class Entity:
         self.width = width
         self.height = height
         self.accel = acceleration
+        self.xchange = 0
+        self.ychange = 0
         if image:
             self.width = self.image.get_width()
             self.height = self.image.get_height()
@@ -71,8 +76,21 @@ class Entity:
 
 
 class Player(Entity):
-    xchange = 0
-    ychange = 0
+    def __init__(self):
+        
+
+
+    def player_movement(self, keys):
+        #up_down_left_right
+        if self.speed > self.x_change > (self.speed * -1):
+            self.x_change += self.accel
+
+            elif keys[2]:
+
+            elif keys[3]:
+                self.x_change += self.accel
+
+        return
 
     def control_check_new(self, event):
         if event.type == pygame.KEYDOWN:
@@ -114,7 +132,7 @@ class Player(Entity):
 
 
 def key_update(events):
-        if events.type == pygame.KEYUP:
+        if events.type == pygame.KEYDOWN:
             if events.key == pygame.K_LEFT:
                 up_down_left_right[2] = True
 
@@ -127,7 +145,7 @@ def key_update(events):
             elif events.key == pygame.K_UP:
                 up_down_left_right[0] = True
 
-        if events.type == pygame.KEYDOWN:
+        if events.type == pygame.KEYUP:
             if events.key == pygame.K_LEFT:
                 up_down_left_right[2] = False
 
@@ -147,11 +165,6 @@ def update_all(list):
     for entity in list:
         entity.xmax = entity.x + entity.width
         entity.ymax = entity.y + entity.height
-
-
-player_ship = Player('ship', (display_width * 0.45), (display_height * 0.8), 10,
-                     pygame.image.load_extended(os.path.join("Ship.png")), acceleration=1)
-death_block = Entity('block', random.randrange(0, display_width), -600, 7, image=None, width=100, height=100)
 
 
 def text_objects(text, font):
@@ -184,8 +197,6 @@ def game_reset():
     up_down_left_right[3] = False
 
 def game_loop():
-    x_change = 0
-    y_change = 0
     player_delta = []
     game_exit = False
 
@@ -215,12 +226,12 @@ def game_loop():
         update_all(entity_list)
         pygame.display.update()
         print(up_down_left_right)
-
-
-
         clock.tick(60)
 
 
+player_ship = Player('ship', (display_width * 0.45), (display_height * 0.8), 10,
+                     pygame.image.load_extended(os.path.join("Ship.png")), acceleration=1)
+death_block = Entity('block', random.randrange(0, display_width), -600, 7, image=None, width=100, height=100)
 game_loop()
 pygame.quit()
 quit()
