@@ -3,108 +3,31 @@ import os
 import time
 import pygame.transform
 import random
-
-
+import GlobalVars
+from Entity import Entity, entity_list
+from Player import Player
 pygame.init()
 
-display_width = 800
-display_height = 600
+display_width = GlobalVars.display_width
+display_height = GlobalVars.display_height
 
-black = (0, 0, 0)
-white = (255, 255, 255)
-red = (255, 0, 0)
-blue = (0, 0, 255)
-green = (0, 255, 0)
+black = GlobalVars.black
+white = GlobalVars.white
+red = GlobalVars.red
+blue = GlobalVars.blue
+green = GlobalVars.green
 
-speed_decay = 0.5
+speed_decay = GlobalVars.speed_decay
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('GAME TIME')
 clock = pygame.time.Clock()
-entity_list = []
 key_list = []
-up_down_left_right = [False, False, False, False]
+up_down_left_right = GlobalVars.up_down_left_right
 
 
-class Entity:
+class Block(Entity):
     def __init__(self, name, x, y, speed, image=None, width=0, height=0, acceleration=0):
-        self.name = name
-        self.x = x
-        self.y = y
-        self.image = image
-        self.speed = speed
-        self.width = width
-        self.height = height
-        self.accel = acceleration
-        self.xchange = 0
-        self.ychange = 0
-        if image:
-            self.width = self.image.get_width()
-            self.height = self.image.get_height()
-        self.xmax = x + self.width
-        self.ymax = y + self.height
-        entity_list.append(self)
-
-    def display_entity(self):
-        if self.image:
-            gameDisplay.blit(self.image, (self.x, self.y))
-        self.xmax = self.x + self.width
-        self.ymax = self.y + self.height
-
-    def create_rect(self, color):
-        pygame.draw.rect(gameDisplay, color, [self.x, self.y, self.width, self.height])
-        self.xmax = self.x + self.width
-        self.ymax = self.y + self.height
-
-    def block_reset(self):
-        if self.y > display_height + self.height:
-            self.y = 0 - self.height
-            self.x = random.randrange(0, display_width)
-
-    def block_move(self):
-        self.y += self.speed
-
-    def entity_collision(self, ent_list):
-        for entity in ent_list:
-            if (self.x < entity.xmax and self.y < entity.ymax) and (self.xmax > entity.x and self.ymax > entity.y):
-                if self.name is not entity.name:
-                    crash()
-
-
-class Player(Entity):
-
-    def player_movement(self, keys):
-        if self.speed -1 >= self.xchange >= ((self.speed -1) * -1):
-            if keys[2]:
-                self.xchange += (self.accel * -1)
-            elif keys[3]:
-                self.xchange += self.accel
-
-        if self.speed -1 >= self.ychange >= ((self.speed -1) * -1):
-            if keys[0]:
-                self.ychange += (self.accel * -1)
-            elif keys[1]:
-                self.ychange += self.accel
-
-        if self.xchange != 0:
-            if not keys[2] and self.xchange < 0:
-                self.xchange += speed_decay
-            elif not keys[3] and self.xchange > 0:
-                self.xchange += speed_decay * -1
-
-        if self.ychange != 0:
-            if not keys[0] and self.ychange < 0:
-                self.ychange += speed_decay
-            elif not keys[1] and self.ychange > 0:
-                self.ychange += speed_decay * -1
-        self.x += self.xchange
-        self.y += self.ychange
-
-        print("x " + str(self.xchange))
-        print("y " + str(self.ychange))
-
-    def player_bounds_check(self):
-        if self.x > display_width - self.width or self.x < 0 or self.y > display_height - self.height or self.y < 0:
-            crash()
+        super().__init__(name, x, y, speed, image, width, height, acceleration)
 
 
 def key_update(events):
@@ -135,8 +58,8 @@ def key_update(events):
                 up_down_left_right[0] = False
 
 
-def update_all(list):
-    for entity in list:
+def update_all(ent_list):
+    for entity in ent_list:
         entity.xmax = entity.x + entity.width
         entity.ymax = entity.y + entity.height
 
@@ -155,6 +78,11 @@ def message_display(text):
     time.sleep(5)
     game_reset()
     game_loop()
+
+
+def game_over(player):
+    if player.player_collison_check() or player.player_bounds_check():
+        crash()
 
 
 def crash():
@@ -183,12 +111,13 @@ def game_loop():
                 quit()
         player_ship.player_movement(up_down_left_right)
         gameDisplay.fill(white)
-        player_ship.display_entity()
+        player_ship.display_entity(gameDisplay)
 
-        death_block.create_rect(black)
+        death_block.create_rect(black, gameDisplay)
         death_block.block_move()
         player_ship.player_bounds_check()
-        player_ship.entity_collision(entity_list)
+        player_ship.player_collison_check()
+        game_over(player_ship)
         death_block.block_reset()
 
         update_all(entity_list)
