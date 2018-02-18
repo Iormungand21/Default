@@ -24,9 +24,6 @@ entity_list = []
 key_list = []
 up_down_left_right = [False, False, False, False]
 
-x_change = 0
-y_change = 0
-
 
 class Entity:
     def __init__(self, name, x, y, speed, image=None, width=0, height=0, acceleration=0):
