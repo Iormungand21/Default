@@ -1,4 +1,5 @@
-import pygame, random
+import pygame
+import random
 from Entity import Entity, entity_list
 from GlobalVars import display_height, display_width
 

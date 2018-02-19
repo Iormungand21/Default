@@ -1,8 +1,8 @@
 import pygame
-import time
+
 
 from Entity import Entity, entity_list
-from GlobalVars import display_height, display_width, red
+from GlobalVars import red
 
 
 class Gun(Entity):
@@ -20,11 +20,11 @@ class Gun(Entity):
         self.x = target.x
         self.y = target.y
 
-    def gun_fire(self, player, game_display, keys, clock):
+    def gun_fire(self, player, game_display, keys):
         gun_time = (pygame.time.get_ticks() / 100)
         if gun_time - self.last_shot > self.fire_rate:
             if keys[4]:
-                bullet = Bullet('player_bullet', player.x + (player.width/2) -2, player.y, 20, width=4, height=20)
+                bullet = Bullet('player_bullet', player.x + (player.width/2) - 2, player.y, 20, width=4, height=20)
                 pygame.draw.rect(game_display, red, [bullet.x, bullet.y, bullet.width, bullet.height])
                 self.last_shot = gun_time
 

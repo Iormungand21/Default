@@ -1,6 +1,3 @@
-import random
-
-import pygame
 import GlobalVars
 
 display_width = GlobalVars.display_width

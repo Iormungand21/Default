@@ -33,7 +33,6 @@ class Player(Entity):
         self.x += self.xchange
         self.y += self.ychange
 
-
     def player_bounds_check(self):
         if (self.x > GlobalVars.display_width - self.width or
                 self.x < 0 or self.y > GlobalVars.display_height - self.height or self.y < 0):

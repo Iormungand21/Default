@@ -5,14 +5,21 @@ import pygame.transform
 import random
 import GlobalVars
 from Block import Block
-from Entity import Entity, entity_list, Background
+from Entity import entity_list, Background
 from GameFunctions import key_update, update_all, text_objects, bullet_update, entity_cleanup
 from Weapons import Gun
 from Player import Player
+
 pygame.init()
 
 display_width = GlobalVars.display_width
 display_height = GlobalVars.display_height
+
+images = {
+    "ship": pygame.image.load_extended(os.path.join("res", "Ship2.png")),
+    "gun": pygame.image.load_extended(os.path.join("res", "gun1.png")),
+    "background": pygame.image.load_extended(os.path.join("background.png"))
+}
 
 black = GlobalVars.black
 white = GlobalVars.white
@@ -27,8 +34,6 @@ clock = pygame.time.Clock()
 up_down_left_right = GlobalVars.up_down_left_right_fire
 
 
-
-
 def message_display(text):
     large_text = pygame.font.Font('freesansbold.ttf', 115)
     text_surf, text_rect = text_objects(text, large_text)
@@ -40,14 +45,13 @@ def message_display(text):
     game_loop()
 
 
-def bullet_hit(entity_list):
-    for bullet in entity_list[2]:
-        results = bullet.entity_collision(entity_list[1])
+def bullet_hit(ent_list):
+    for bullet in ent_list[2]:
+        results = bullet.entity_collision(ent_list[1])
         if results:
             bullet.alive = False
             results[1].alive = False
             print(results)
-           # del results[1]
 
 
 def game_over(player):
@@ -89,15 +93,13 @@ def game_loop():
         background.move()
         background2.move()
         player_ship.display_entity(gameDisplay)
-
         death_block.create_rect(black, gameDisplay)
         death_block.block_move()
         game_over(player_ship)
         death_block.block_reset()
-
         guns.gun_update(player_ship)
         guns.gun_display(gameDisplay)
-        guns.gun_fire(player_ship, gameDisplay, up_down_left_right, clock)
+        guns.gun_fire(player_ship, gameDisplay, up_down_left_right)
         bullet_update(entity_list, gameDisplay)
         update_all(entity_list)
         bullet_hit(entity_list)
@@ -106,15 +108,14 @@ def game_loop():
         clock.tick(60)
 
 
-background = Background('background', 0, 0, 4, image=pygame.image.load_extended(os.path.join("background.png")))
-background2 = Background('background', 0, -1000, 4, image=pygame.image.load_extended(os.path.join("background.png")))
+background = Background('background', 0, 0, 4, image=images['background'])
+background2 = Background('background', 0, -1000, 4, image=images['background'])
 
 
 player_ship = Player('ship', (display_width * 0.45), (display_height * 0.8), 10,
-                     pygame.image.load_extended(os.path.join("Ship2.png")), acceleration=1)
+                     images['ship'], acceleration=1)
 
-guns = Gun('guns', player_ship.x, player_ship.y, 0, 5, None, image=pygame.image.load_extended(
-    os.path.join("gun1.png")))
+guns = Gun('guns', player_ship.x, player_ship.y, 0, 5, None, image=images['gun'])
 
 death_block = Block('block', random.randrange(0, display_width), -600, 7, image=None, width=100, height=100)
 

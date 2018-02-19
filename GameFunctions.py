@@ -29,7 +29,6 @@ def key_update(events):
             up_down_left_right_fire[4] = False
 
 
-
 def update_all(ent_list):
     for entity_list in ent_list:
         for entity in entity_list:
@@ -50,10 +49,7 @@ def bullet_update(entity_list, game_display):
 
 
 def entity_cleanup(entity_list):
-    for list in entity_list:
-        for entity in list:
+    for ent_list in entity_list:
+        for entity in ent_list:
             if not entity.alive:
-                list.remove(entity)
-
-
-
+                ent_list.remove(entity)
