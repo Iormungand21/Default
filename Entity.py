@@ -8,9 +8,10 @@ display_height = GlobalVars.display_height
 entity_list = []
 
 
-class Entity:
+class Entity():
 
     def __init__(self, name, x, y, speed, image=None, width=0, height=0, acceleration=0):
+        super().__init__()
         self.name = name
         self.x = x
         self.y = y
