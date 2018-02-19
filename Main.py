@@ -18,7 +18,7 @@ display_height = GlobalVars.display_height
 images = {
     "ship": pygame.image.load_extended(os.path.join("res", "Ship2.png")),
     "gun": pygame.image.load_extended(os.path.join("res", "gun1.png")),
-    "background": pygame.image.load_extended(os.path.join("background.png"))
+    "background": pygame.image.load_extended(os.path.join("res", "background.png"))
 }
 
 black = GlobalVars.black
