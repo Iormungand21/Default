@@ -4,8 +4,10 @@ import time
 import pygame.transform
 import random
 import GlobalVars
+from Block import Block
 from Entity import Entity, entity_list
-from GameFunctions import key_update, update_all, text_objects
+from GameFunctions import key_update, update_all, text_objects, bullet_update
+from Weapons import Gun
 from Player import Player
 pygame.init()
 
@@ -22,13 +24,7 @@ speed_decay = GlobalVars.speed_decay
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('GAME TIME')
 clock = pygame.time.Clock()
-up_down_left_right = GlobalVars.up_down_left_right
-
-
-class Block(Entity):
-    def __init__(self, name, x, y, speed, image=None, width=0, height=0, acceleration=0):
-        super().__init__(name, x, y, speed, image, width, height, acceleration)
-
+up_down_left_right = GlobalVars.up_down_left_right_fire
 
 def message_display(text):
     large_text = pygame.font.Font('freesansbold.ttf', 115)
@@ -70,16 +66,23 @@ def game_loop():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+        update_all(entity_list)
         player_ship.player_movement(up_down_left_right)
         gameDisplay.fill(white)
         player_ship.display_entity(gameDisplay)
-        guns.display_entity(player_ship.image)
+
         death_block.create_rect(black, gameDisplay)
         death_block.block_move()
         game_over(player_ship)
         death_block.block_reset()
+
+        guns.gun_update(player_ship)
+        guns.gun_display(gameDisplay)
+        guns.gun_fire(player_ship, gameDisplay, up_down_left_right)
+        bullet_update(entity_list, gameDisplay)
         update_all(entity_list)
         pygame.display.update()
+        print(str(guns.x) + " " + str(guns.y))
 
         clock.tick(60)
 
@@ -87,9 +90,10 @@ def game_loop():
 player_ship = Player('ship', (display_width * 0.45), (display_height * 0.8), 10,
                      pygame.image.load_extended(os.path.join("Ship2.png")), acceleration=1)
 
-guns = Entity('guns', player_ship.x, player_ship.y, 0, pygame.image.load_extended(os.path.join("gun1.png")))
+guns = Gun('guns', player_ship.x, player_ship.y, 0, None, None, image=pygame.image.load_extended(
+    os.path.join("gun1.png")))
 
-death_block = Entity('block', random.randrange(0, display_width), -600, 7, image=None, width=100, height=100)
+death_block = Block('block', random.randrange(0, display_width), -600, 7, image=None, width=100, height=100)
 
 game_loop()
 pygame.quit()

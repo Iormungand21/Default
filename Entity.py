@@ -5,7 +5,10 @@ import GlobalVars
 
 display_width = GlobalVars.display_width
 display_height = GlobalVars.display_height
-entity_list = []
+entities_friendly = []
+entities_enemies = []
+entities_friendly_bullets = []
+entity_list = [entities_friendly, entities_enemies, entities_friendly_bullets]
 
 
 class Entity():
@@ -27,7 +30,7 @@ class Entity():
             self.height = self.image.get_height()
         self.xmax = x + self.width
         self.ymax = y + self.height
-        entity_list.append(self)
+        #entity_list.append(self)
 
     def display_entity(self, game_display):
         if self.image:
@@ -39,14 +42,6 @@ class Entity():
         pygame.draw.rect(game_display, color, [self.x, self.y, self.width, self.height])
         self.xmax = self.x + self.width
         self.ymax = self.y + self.height
-
-    def block_reset(self):
-        if self.y > display_height + self.height:
-            self.y = 0 - self.height
-            self.x = random.randrange(0, display_width)
-
-    def block_move(self):
-        self.y += self.speed
 
     def entity_collision(self, ent_list):
         for entity in ent_list:

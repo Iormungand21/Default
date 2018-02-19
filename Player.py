@@ -37,13 +37,14 @@ class Player(Entity):
         print("y " + str(self.ychange))
 
     def player_bounds_check(self):
-        if self.x > GlobalVars.display_width - self.width or self.x < 0 or self.y > GlobalVars.display_height - self.height or self.y < 0:
+        if (self.x > GlobalVars.display_width - self.width or
+                self.x < 0 or self.y > GlobalVars.display_height - self.height or self.y < 0):
             return True
         else:
             return False
 
     def player_collison_check(self):
-        collided = self.entity_collision(entity_list)
+        collided = self.entity_collision(entity_list[1])
         if collided:
             return True
         else:
