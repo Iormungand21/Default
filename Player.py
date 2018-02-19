@@ -33,8 +33,6 @@ class Player(Entity):
         self.x += self.xchange
         self.y += self.ychange
 
-        print("x " + str(self.xchange))
-        print("y " + str(self.ychange))
 
     def player_bounds_check(self):
         if (self.x > GlobalVars.display_width - self.width or

@@ -44,8 +44,16 @@ def text_objects(text, font):
 
 def bullet_update(entity_list, game_display):
     for entity in entity_list[2]:
-        entity.y += entity.speed * - 1
-        pygame.draw.rect(game_display, red, [entity.x, entity.y, entity.width, entity.height])
+        if entity.alive:
+            entity.y += entity.speed * - 1
+            pygame.draw.rect(game_display, red, [entity.x, entity.y, entity.width, entity.height])
+
+
+def entity_cleanup(entity_list):
+    for list in entity_list:
+        for entity in list:
+            if not entity.alive:
+                list.remove(entity)
 
 
 

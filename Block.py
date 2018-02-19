@@ -9,9 +9,10 @@ class Block(Entity):
         entity_list[1].append(self)
 
     def create_rect(self, color, game_display):
-        pygame.draw.rect(game_display, color, [self.x, self.y, self.width, self.height])
-        self.xmax = self.x + self.width
-        self.ymax = self.y + self.height
+        if self.alive:
+            pygame.draw.rect(game_display, color, [self.x, self.y, self.width, self.height])
+            self.xmax = self.x + self.width
+            self.ymax = self.y + self.height
 
     def block_reset(self):
         if self.y > display_height + self.height:
