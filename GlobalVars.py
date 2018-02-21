@@ -8,4 +8,4 @@ blue = (0, 0, 255)
 green = (0, 255, 0)
 speed_decay = 0.5
 up_down_left_right_fire = [False, False, False, False, False]
-fire_key = False
+
