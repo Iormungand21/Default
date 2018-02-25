@@ -110,13 +110,9 @@ def game_loop():
 
 background = Background('background', 0, 0, 4, image=images['background'])
 background2 = Background('background', 0, -1000, 4, image=images['background'])
-
-
 player_ship = Player('ship', (display_width * 0.45), (display_height * 0.8), 10,
                      images['ship'], acceleration=1)
-
 guns = Gun('guns', player_ship.x, player_ship.y, 0, 5, None, image=images['gun'])
-
 death_block = Block('block', random.randrange(0, display_width), -600, 7, image=None, width=100, height=100)
 
 game_loop()
